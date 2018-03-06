@@ -30,29 +30,29 @@ extern "C"
 /*                        Used by all Linked List Types                       */
 /*----------------------------------------------------------------------------*/
 typedef enum {
-    TVALL_MODE__BEFORE,
-    TVALL_MODE__AFTER
-} tvall_insert_mode_t;
+    REBAR_MODE__BEFORE,
+    REBAR_MODE__AFTER
+} rebar_ll_insert_mode_t;
 
 typedef enum {
-    TVALL_IR__CONTINUE,
-    TVALL_IR__DELETE_AND_CONTINUE,
-    TVALL_IR__STOP,
-    TVALL_IR__DELETE_AND_STOP
-} tvall_iterator_response_t;
+    REBAR_IR__CONTINUE,
+    REBAR_IR__DELETE_AND_CONTINUE,
+    REBAR_IR__STOP,
+    REBAR_IR__DELETE_AND_STOP
+} rebar_ll_iterator_response_t;
 
 /**
  *  Macro to obtain the pointer to your struct given a linked list node
- *  (doesn't matter if it is a tvall_s_node_t or tvall_d_node_t (when
+ *  (doesn't matter if it is a rebar_ll_node_t or rebar_ll_d_node_t (when
  *  they exist).
  *
  *  struct myStruct {
  *      char          *junk1;
  *      int            junk2;
- *      tvall_s_node_t link;
+ *      rebar_ll_node_t link;
  *  };
  *
- *  tvall_s_node_t  *joe = tvall_s_get_first(list);
+ *  rebar_ll_node_t  *joe = rebar_ll_get_first(list);
  *  struct myStruct *lou = MACLISTSTRUCTPTR( struct myStruct, link, joe );
  *
  *  @param struct_name the user structure name
@@ -65,7 +65,7 @@ typedef enum {
  //  except when the structure is C-compatible POD (Plain Old Data).  IE, when
  //  the structure involves C++ classes, then a warning may occur.
  //  To disable the warning, use the -Wno-invalid-offsetof compiler option. 
-#define tvall_get_data( struct_name, node_name, node ) \
+#define rebar_ll_get_data( struct_name, node_name, node ) \
     ((struct_name *)((char *)node - offsetof(struct_name, node_name)))
 
 /*----------------------------------------------------------------------------*/
@@ -74,16 +74,16 @@ typedef enum {
 
 /* Do not directly use this structure's internals.  Only use this library
  * to modify the linked list. */
-typedef struct __tvall_s_node {
-    struct __tvall_s_node *next;
-} tvall_s_node_t;
+typedef struct __rebar_ll_node {
+    struct __rebar_ll_node *next;
+} rebar_ll_node_t;
 
 /* Do not directly use this structure's internals.  Only use this library
  * to modify the linked list. */
 typedef struct {
-    tvall_s_node_t *head; 
-    tvall_s_node_t *tail; 
-} tvall_s_list_t;
+    rebar_ll_node_t *head; 
+    rebar_ll_node_t *tail; 
+} rebar_ll_list_t;
 
 /**
  *  Called during the list iterate operation for each node.
@@ -93,13 +93,13 @@ typedef struct {
  *  @param node the current node in the iteration over the linked list
  *  @param user_data the supplied user data to the iterator function
  *
- *  @retval TVALL_IR__CONTINUE do not alter the node & continue iterating 
- *  @retval TVALL_IR__DELETE_AND_CONTINUE delete the node & continue
+ *  @retval REBAR_IR__CONTINUE do not alter the node & continue iterating 
+ *  @retval REBAR_IR__DELETE_AND_CONTINUE delete the node & continue
  *                                        iterating 
- *  @retval TVALL_IR__STOP do not alter the node but stop processing
- *  @retval TVALL_IR__DELETE_AND_STOP delete the node & stop processing
+ *  @retval REBAR_IR__STOP do not alter the node but stop processing
+ *  @retval REBAR_IR__DELETE_AND_STOP delete the node & stop processing
  */
-typedef tvall_iterator_response_t (*tvall_s_iterator_fn_t) ( tvall_s_node_t *node,
+typedef rebar_ll_iterator_response_t (*rebar_ll_iterator_fn_t) ( rebar_ll_node_t *node,
                                                              void *user_data );
 
 /**
@@ -112,7 +112,7 @@ typedef tvall_iterator_response_t (*tvall_s_iterator_fn_t) ( tvall_s_node_t *nod
  *  @param node the node being deleted from the list
  *  @param user_data the supplied user data to the iterator/delete function
  */
-typedef void (*tvall_s_delete_node_fn_t) ( tvall_s_node_t *node,
+typedef void (*rebar_ll_delete_node_fn_t) ( rebar_ll_node_t *node,
                                            void *user_data );
 
 /**
@@ -126,16 +126,16 @@ typedef void (*tvall_s_delete_node_fn_t) ( tvall_s_node_t *node,
  *          less then 0 if needle is less then node,
  *          greater then 0 if needle is greater then node
  */
-typedef int (*tvall_s_cmp_node_fn_t) ( void *needle, void *node );
+typedef int (*rebar_ll_cmp_node_fn_t) ( void *needle, void *node );
 
 /**
  *  Used to initialize a singly linked list.
  *
  *  @note Do not pass in NULL for the list or it will be dereferenced!
  *
- *  @param list the pointer to the tvall_s_list_t struct to initiate
+ *  @param list the pointer to the rebar_ll_list_t struct to initiate
  */
-#define tvall_s_init( list )    \
+#define rebar_ll_init( list )    \
 {                               \
     (list)->head = NULL;        \
     (list)->tail = NULL;        \
@@ -150,7 +150,7 @@ typedef int (*tvall_s_cmp_node_fn_t) ( void *needle, void *node );
  *
  *  @return first node on success, NULL on error or empty list
  */
-#define tvall_s_get_first( list ) ((list)->head)
+#define rebar_ll_get_first( list ) ((list)->head)
 
 /**
  *  Used to get the next node from the list.
@@ -159,7 +159,7 @@ typedef int (*tvall_s_cmp_node_fn_t) ( void *needle, void *node );
  *
  *  @return next node on success, NULL on error or no further nodes available
  */
-#define tvall_s_get_next( node ) \
+#define rebar_ll_get_next( node ) \
     (NULL == (node)) ? NULL : (node)->next
 
 /**
@@ -171,7 +171,7 @@ typedef int (*tvall_s_cmp_node_fn_t) ( void *needle, void *node );
  *
  *  @return last node on success, NULL on error or empty list
  */
-#define tvall_s_get_last( list ) ((list)->tail)
+#define rebar_ll_get_last( list ) ((list)->tail)
 
 /**
  *  Used to append a node to the tail of a list.
@@ -184,7 +184,7 @@ typedef int (*tvall_s_cmp_node_fn_t) ( void *needle, void *node );
  *  @param list the list to append to
  *  @param node the node to append to the list
  */
-void tvall_s_append( tvall_s_list_t *list, tvall_s_node_t *node );
+void rebar_ll_append( rebar_ll_list_t *list, rebar_ll_node_t *node );
 
 /**
  *  Used to prepend a node to the head of the list.
@@ -197,7 +197,7 @@ void tvall_s_append( tvall_s_list_t *list, tvall_s_node_t *node );
  *  @param list the list to prepend to
  *  @param node the node to prepend to the list
  */
-void tvall_s_prepend( tvall_s_list_t *list, tvall_s_node_t *node );
+void rebar_ll_prepend( rebar_ll_list_t *list, rebar_ll_node_t *node );
 
 /**
  *  Used to insert a node either before or after the specified
@@ -214,9 +214,9 @@ void tvall_s_prepend( tvall_s_list_t *list, tvall_s_node_t *node );
  *                          before or after
  *  @param mode indicator of the insertion type
  */
-void tvall_s_insert( tvall_s_list_t *list, tvall_s_node_t *node,
-                     tvall_s_node_t *insert_near_node,
-                     const tvall_insert_mode_t mode );
+void rebar_ll_insert( rebar_ll_list_t *list, rebar_ll_node_t *node,
+                     rebar_ll_node_t *insert_near_node,
+                     const rebar_ll_insert_mode_t mode );
 
 /**
  *  Used to remove the node at the head of the list.
@@ -229,7 +229,7 @@ void tvall_s_insert( tvall_s_list_t *list, tvall_s_node_t *node,
  *
  *  @param list the list whose head not to remove
  */
-#define tvall_s_remove_head( list )         \
+#define rebar_ll_remove_head( list )         \
 {                                           \
     if( NULL != (list)->head ) {            \
         (list)->head = (list)->head->next;  \
@@ -249,7 +249,7 @@ void tvall_s_insert( tvall_s_list_t *list, tvall_s_node_t *node,
  *  @param list the list to remove a node from
  *  @param node the node to remove from the list
  */
-void tvall_s_remove( tvall_s_list_t *list, tvall_s_node_t *node );
+void rebar_ll_remove( rebar_ll_list_t *list, rebar_ll_node_t *node );
 
 /**
  *  Used to iterate over a list and optionally delete nodes from
@@ -268,15 +268,15 @@ void tvall_s_remove( tvall_s_list_t *list, tvall_s_node_t *node );
  *                  is passed in each node in the list is deleted.
  *  @param deleter the user provided function called to delete the node
  */
-void tvall_s_iterate( tvall_s_list_t *list,
-                      tvall_s_iterator_fn_t iterator,
-                      tvall_s_delete_node_fn_t deleter,
+void rebar_ll_iterate( rebar_ll_list_t *list,
+                      rebar_ll_iterator_fn_t iterator,
+                      rebar_ll_delete_node_fn_t deleter,
                       void *user_data );
 
 /**
  *  Used to iterate a list starting at a specific node in the
  *  linked list.  This API is not intended to delete nodes. It's
- *  more of an extension to tvall_s_find.
+ *  more of an extension to rebar_ll_find.
  *
  *  @param node from which to start the iteration 
  *  @param iterator The user provided function to call for each
@@ -284,8 +284,8 @@ void tvall_s_iterate( tvall_s_list_t *list,
  *  @param user_data data passed to the iterator 
 
  */
-void tvall_s_iterate_from (tvall_s_node_t *node,
-                           tvall_s_iterator_fn_t iterator,
+void rebar_ll_iterate_from (rebar_ll_node_t *node,
+                           rebar_ll_iterator_fn_t iterator,
                            void *user_data);
 /**
  *  Used to delete all nodes in a list.  For each node in the list,
@@ -301,8 +301,8 @@ void tvall_s_iterate_from (tvall_s_node_t *node,
  *  @param list the list to delete the nodes of
  *  @param deleter the user provided function called to delete the node
  */
-#define tvall_s_delete_all( list, deleter, user_data ) \
-    tvall_s_iterate( list, NULL, deleter, user_data )
+#define rebar_ll_delete_all( list, deleter, user_data ) \
+    rebar_ll_iterate( list, NULL, deleter, user_data )
 
 /**
  *  Used to count the number of nodes in a list.
@@ -313,7 +313,7 @@ void tvall_s_iterate_from (tvall_s_node_t *node,
  *
  *  @return the number of items in the list
  */
-size_t tvall_s_count( tvall_s_list_t *list );
+size_t rebar_ll_count( rebar_ll_list_t *list );
 
 /**
  *  Used to find a specific node in the linked list.
@@ -321,7 +321,7 @@ size_t tvall_s_count( tvall_s_list_t *list );
  *  @note Do not pass in NULL for the list or it will be dereferenced!
  *  @note Do not pass in NULL for the cmp_fn or it will be dereferenced!
  *
- *  @note See tvall_get_data() for details about struct_name and node_name
+ *  @note See rebar_ll_get_data() for details about struct_name and node_name
  *        useage.
  *
  *  @param list the list to search through
@@ -333,10 +333,10 @@ size_t tvall_s_count( tvall_s_list_t *list );
  *  @return the node that matches the needle's data if one is found,
  *          NULL otherwise
  */
-#define tvall_s_find( list, cmp_fn, needle, struct_name, node_name ) \
-    __tvall_s_find( list, cmp_fn, needle, offsetof(struct_name, node_name) )
-tvall_s_node_t *__tvall_s_find( tvall_s_list_t *list,
-                                tvall_s_cmp_node_fn_t cmp_fn,
+#define rebar_ll_find( list, cmp_fn, needle, struct_name, node_name ) \
+    __rebar_ll_find( list, cmp_fn, needle, offsetof(struct_name, node_name) )
+rebar_ll_node_t *__rebar_ll_find( rebar_ll_list_t *list,
+                                rebar_ll_cmp_node_fn_t cmp_fn,
                                 void *needle,
                                 int offset );
 

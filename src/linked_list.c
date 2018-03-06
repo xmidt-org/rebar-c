@@ -18,15 +18,15 @@
 
 #include "rebar-c.h"
 
-static tvall_iterator_response_t __find_iterator( tvall_s_node_t *node,
+static rebar_ll_iterator_response_t __find_iterator( rebar_ll_node_t *node,
                                                   void *user_data );
 
 
-void tvall_s_insert( tvall_s_list_t *list, tvall_s_node_t *new_node,
-                     tvall_s_node_t *insert_near_node,
-                     const tvall_insert_mode_t mode )
+void rebar_ll_insert( rebar_ll_list_t *list, rebar_ll_node_t *new_node,
+                     rebar_ll_node_t *insert_near_node,
+                     const rebar_ll_insert_mode_t mode )
 {
-    tvall_s_node_t *current, *prev;
+    rebar_ll_node_t *current, *prev;
 
     if( (NULL == new_node) || (NULL == insert_near_node) ) {
         return;
@@ -35,13 +35,13 @@ void tvall_s_insert( tvall_s_list_t *list, tvall_s_node_t *new_node,
     prev = NULL;
     current = list->head;
 
-    if( (insert_near_node == current) && (TVALL_MODE__BEFORE == mode) ) {
-        tvall_s_prepend( list, new_node );
+    if( (insert_near_node == current) && (REBAR_MODE__BEFORE == mode) ) {
+        rebar_ll_prepend( list, new_node );
         return;
     }
 
-    if( (insert_near_node == list->tail) && (TVALL_MODE__AFTER == mode) ) {
-        tvall_s_append( list, new_node );
+    if( (insert_near_node == list->tail) && (REBAR_MODE__AFTER == mode) ) {
+        rebar_ll_append( list, new_node );
         return;
     }
 
@@ -51,7 +51,7 @@ void tvall_s_insert( tvall_s_list_t *list, tvall_s_node_t *new_node,
     while( NULL != current ) {
         if( insert_near_node == current ) {
             /* We found the node to insert next to. */
-            if( TVALL_MODE__BEFORE == mode ) {
+            if( REBAR_MODE__BEFORE == mode ) {
                 prev->next = new_node;
                 new_node->next = current;
             } else {
@@ -67,7 +67,7 @@ void tvall_s_insert( tvall_s_list_t *list, tvall_s_node_t *new_node,
 }
 
 
-void tvall_s_append( tvall_s_list_t *list, tvall_s_node_t *node )
+void rebar_ll_append( rebar_ll_list_t *list, rebar_ll_node_t *node )
 {
     if( NULL != node ) {
         if( NULL != list->tail ) {
@@ -84,14 +84,14 @@ void tvall_s_append( tvall_s_list_t *list, tvall_s_node_t *node )
     }
 }
 
-size_t tvall_s_count( tvall_s_list_t *list )
+size_t rebar_ll_count( rebar_ll_list_t *list )
 {
     size_t count;
-    tvall_s_node_t *node;
+    rebar_ll_node_t *node;
 
     count = 0;
 
-    node = tvall_s_get_first( list );
+    node = rebar_ll_get_first( list );
     while( NULL != node ) {
         count++;
         node = node->next;
@@ -109,10 +109,10 @@ size_t tvall_s_count( tvall_s_list_t *list )
 /*                               Data Structures                              */
 /*----------------------------------------------------------------------------*/
 struct find_info {
-    tvall_s_node_t *found;
+    rebar_ll_node_t *found;
     void *needle;
     int offset;
-    tvall_s_cmp_node_fn_t cmp_fn;
+    rebar_ll_cmp_node_fn_t cmp_fn;
 };
 
 /*----------------------------------------------------------------------------*/
@@ -123,14 +123,14 @@ struct find_info {
 /*----------------------------------------------------------------------------*/
 /*                             Function Prototypes                            */
 /*----------------------------------------------------------------------------*/
-static tvall_iterator_response_t __find_iterator( tvall_s_node_t *node,
+static rebar_ll_iterator_response_t __find_iterator( rebar_ll_node_t *node,
                                                   void *user_data );
 
 /*----------------------------------------------------------------------------*/
 /*                             External Functions                             */
 /*----------------------------------------------------------------------------*/
-tvall_s_node_t *__tvall_s_find( tvall_s_list_t *list,
-                                tvall_s_cmp_node_fn_t cmp_fn,
+rebar_ll_node_t *__rebar_ll_find( rebar_ll_list_t *list,
+                                rebar_ll_cmp_node_fn_t cmp_fn,
                                 void *needle,
                                 int offset )
 {
@@ -141,13 +141,13 @@ tvall_s_node_t *__tvall_s_find( tvall_s_list_t *list,
     find.offset = offset;
     find.cmp_fn = cmp_fn;
 
-    tvall_s_iterate(list, __find_iterator, NULL, &find);
+    rebar_ll_iterate(list, __find_iterator, NULL, &find);
 
     return find.found;
 }
 
 
-void tvall_s_prepend( tvall_s_list_t *list, tvall_s_node_t *node )
+void rebar_ll_prepend( rebar_ll_list_t *list, rebar_ll_node_t *node )
 {
     if( NULL != node ) {
         node->next = list->head;
@@ -159,13 +159,13 @@ void tvall_s_prepend( tvall_s_list_t *list, tvall_s_node_t *node )
     }
 }
 
-void tvall_s_remove( tvall_s_list_t *list,
-                     tvall_s_node_t *node )
+void rebar_ll_remove( rebar_ll_list_t *list,
+                     rebar_ll_node_t *node )
 {
-    tvall_s_node_t *current, *prev;
+    rebar_ll_node_t *current, *prev;
 
     prev = NULL;
-    current = tvall_s_get_first( list );
+    current = rebar_ll_get_first( list );
 
     while( NULL != current ) {
 
@@ -190,30 +190,30 @@ void tvall_s_remove( tvall_s_list_t *list,
     }
 }
 
-void tvall_s_iterate( tvall_s_list_t *list,
-                      tvall_s_iterator_fn_t iterator,
-                      tvall_s_delete_node_fn_t deleter,
+void rebar_ll_iterate( rebar_ll_list_t *list,
+                      rebar_ll_iterator_fn_t iterator,
+                      rebar_ll_delete_node_fn_t deleter,
                       void *user_data )
 {
-    tvall_s_node_t *node, *prev, *next;
+    rebar_ll_node_t *node, *prev, *next;
 
     prev = NULL;
-    node = tvall_s_get_first( list );
+    node = rebar_ll_get_first( list );
 
     while( NULL != node ) {
-        tvall_iterator_response_t response;
+        rebar_ll_iterator_response_t response;
 
         next = node->next;
 
-        response = TVALL_IR__DELETE_AND_CONTINUE;
+        response = REBAR_IR__DELETE_AND_CONTINUE;
 
         if( NULL != iterator ) {
             response = (*iterator)( node, user_data );
         }
 
         /* Do we want to delete the node? */
-        if( (TVALL_IR__DELETE_AND_CONTINUE == response) ||
-            (TVALL_IR__DELETE_AND_STOP == response) )
+        if( (REBAR_IR__DELETE_AND_CONTINUE == response) ||
+            (REBAR_IR__DELETE_AND_STOP == response) )
         {
             /* Yep */
 
@@ -233,13 +233,13 @@ void tvall_s_iterate( tvall_s_list_t *list,
                 (*deleter)( node, user_data );
             }
 
-            if( TVALL_IR__DELETE_AND_STOP == response ) {
+            if( REBAR_IR__DELETE_AND_STOP == response ) {
                 return;
             }
             /* The prev node doesn't move because we got rid of the
              * node that would have been the previous node. */
         } else {
-            if( TVALL_IR__STOP == response ) {
+            if( REBAR_IR__STOP == response ) {
                 return;
             }
             prev = node;
@@ -249,11 +249,11 @@ void tvall_s_iterate( tvall_s_list_t *list,
     }
 }
 
-void tvall_s_iterate_from(tvall_s_node_t *from_node,
-                          tvall_s_iterator_fn_t iterator,
+void rebar_ll_iterate_from(rebar_ll_node_t *from_node,
+                          rebar_ll_iterator_fn_t iterator,
                           void *user_data)
 {
-    tvall_s_node_t *node, *next;
+    rebar_ll_node_t *node, *next;
 
     if( NULL == from_node )
     {
@@ -263,17 +263,17 @@ void tvall_s_iterate_from(tvall_s_node_t *from_node,
     node = from_node->next;
 
     while( NULL != node ) {
-        tvall_iterator_response_t response;
+        rebar_ll_iterator_response_t response;
 
         next = node->next;
-        response = TVALL_IR__STOP;
+        response = REBAR_IR__STOP;
 
         if( NULL != iterator ) {
             response = (*iterator)( node, user_data );
         }
 
         /* Do we want to delete the node? */
-        if( TVALL_IR__STOP == response ) {
+        if( REBAR_IR__STOP == response ) {
             return;
         }
         node = next;
@@ -291,10 +291,10 @@ void tvall_s_iterate_from(tvall_s_node_t *from_node,
  *  @param node the node being examined during the iterator
  *  @param user_data the struct find_info* we passed in
  *
- *  @returns TVALL_IR__CONTINUE if it is not a match,
- *           TVALL_IR__STOP when a match is found
+ *  @returns REBAR_IR__CONTINUE if it is not a match,
+ *           REBAR_IR__STOP when a match is found
  */
-static tvall_iterator_response_t __find_iterator( tvall_s_node_t *node,
+static rebar_ll_iterator_response_t __find_iterator( rebar_ll_node_t *node,
                                                   void *user_data )
 {
     struct find_info *find;
@@ -305,8 +305,8 @@ static tvall_iterator_response_t __find_iterator( tvall_s_node_t *node,
 
     if (0 == (*find->cmp_fn)(find->needle, current)) {
         find->found = node;
-        return TVALL_IR__STOP;
+        return REBAR_IR__STOP;
     }
 
-    return TVALL_IR__CONTINUE;
+    return REBAR_IR__CONTINUE;
 }
