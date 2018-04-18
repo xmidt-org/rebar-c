@@ -6,6 +6,8 @@
 
 #include "../src/rebar-c.h"
 #include "general.h"
+#include "test_hashmap.h"
+
 
 struct _foo1 {
     rebar_ll_node_t my_node;
@@ -811,6 +813,9 @@ void add_suites( CU_pSuite *suite )
     CU_add_test( *suite, "Test rebar_ll_count()      ", test_list_get_count );
     CU_add_test( *suite, "Test rebar_ll_find()       ", test_list_find );
     CU_add_test( *suite, "Test rebar_ll_get_data()     ", test_list_get_data );
+    /* Start Tests for HASHMAP */
+    add_hashmap_tests(suite);
+    
 }
 
 /*----------------------------------------------------------------------------*/

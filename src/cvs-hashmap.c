@@ -1,5 +1,18 @@
-/*
- *  Copyright (c) 2012  Comcast
+/**
+ * Copyright 2018 Comcast Cable Communications Management, LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
  */
 
 #include <stdlib.h>
@@ -22,9 +35,7 @@ typedef struct {
     union {
         char *string;
         uint32_t u32;
-#ifdef SUPPORT_UINT64
         uint64_t u64;
-#endif
     } key;
     void *value;
 } cvs_hashmap_node_t;
@@ -48,9 +59,7 @@ static cvs_hashmap_node_t *__get(cvs_hashmap_t *hashmap, void *key);
 static rebar_ll_iterator_response_t __hash_iterator(rebar_ll_node_t *node, void *user_data);
 static int __string_cmp(void *key_a, void *key_b);
 static int __uint32_t_cmp(void *key_a, void *key_b);
-#ifdef SUPPORT_UINT64
 static int __uint64_t_cmp(void *key_a, void *key_b);
-#endif
 
 /*----------------------------------------------------------------------------*/
 /*                             External Functions                             */
@@ -74,11 +83,9 @@ bool cvs_hashmap_init(cvs_hashmap_t *hashmap, cvs_hashmap_type_t type)
                 hashmap->cmp = __uint32_t_cmp;
                 break;
 
-#ifdef SUPPORT_UINT64
             case CHT__UINT64:
                 hashmap->cmp = __uint64_t_cmp;
                 break;
-#endif
 
             default:
                 rv = false;
@@ -151,10 +158,8 @@ void cvs_hashmap_put(cvs_hashmap_t *hashmap, void *key, void *value)
 	assert(n);
         if (__string_cmp == hashmap->cmp) {
             n->key.string = key;
-#ifdef SUPPORT_UINT64
         } else if (__uint64_t_cmp == hashmap->cmp) {
             n->key.u64 = *((uint64_t*) key);
-#endif
         } else {    /* uint32_t mode */
             n->key.u32 = *((uint32_t*) key);
         }
@@ -266,10 +271,8 @@ static rebar_ll_iterator_response_t __hash_iterator(rebar_ll_node_t *node, void 
 
     if (__string_cmp == h->cmp) {
         tmp = (h->fn)(n->key.string, n->value, h->user_data);
-#ifdef SUPPORT_UINT64
     } else if (__uint64_t_cmp == h->cmp) {
         tmp = (h->fn)(&n->key.u64, n->value, h->user_data);
-#endif
     } else {    /* uint32_t mode */
         tmp = (h->fn)(&n->key.u32, n->value, h->user_data);
     }
@@ -309,7 +312,6 @@ static int __uint32_t_cmp(void *key_a, void *key_b)
 }
 
 
-#ifdef SUPPORT_UINT64
 static int __uint64_t_cmp(void *key_a, void *key_b)
 {
     cvs_hashmap_node_t *n;
@@ -327,4 +329,3 @@ static int __uint64_t_cmp(void *key_a, void *key_b)
 
     return 1;
 }
-#endif
