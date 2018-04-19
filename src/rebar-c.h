@@ -346,6 +346,10 @@ rebar_ll_node_t *__rebar_ll_find( rebar_ll_list_t *list,
 
 /* Not currently implemented. */
 
+
+#include "cvs-hashmap.h"
+
+
 #ifdef __cplusplus
 }
 #endif

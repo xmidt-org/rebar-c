@@ -12,10 +12,12 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+cmake_minimum_required(VERSION 2.8.7)
+
 set(PROJ_REBAR rebar-c)
 
 file(GLOB HEADERS rebar-c.h)
-set(SOURCES linked_list.c)
+set(SOURCES linked_list.c cvs-hashmap.c)
 
 add_library(${PROJ_REBAR} STATIC ${HEADERS} ${SOURCES})
 add_library(${PROJ_REBAR}.shared SHARED ${HEADERS} ${SOURCES})
