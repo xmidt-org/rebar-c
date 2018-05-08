@@ -29,3 +29,17 @@ target_link_libraries (simple  gcov
                                cunit
                               -lm
 		      )
+
+#-------------------------------------------------------------------------------
+#   test-symbol-table-map
+#-------------------------------------------------------------------------------
+add_test(NAME test-symbol-table-map COMMAND ${MEMORY_CHECK} ./test-symbol-table-map)
+link_directories ( ${LIBRARY_DIR} )
+
+add_executable(test-symbol-table-map test-symbol-table-map.c ../src/symbol-table-map.c)
+
+target_link_libraries (test-symbol-table-map  gcov
+                                              cunit
+                                              -lm
+                      )
+
