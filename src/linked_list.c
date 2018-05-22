@@ -190,12 +190,13 @@ void rebar_ll_remove( rebar_ll_list_t *list,
     }
 }
 
-void rebar_ll_iterate( rebar_ll_list_t *list,
+int rebar_ll_iterate( rebar_ll_list_t *list,
                       rebar_ll_iterator_fn_t iterator,
                       rebar_ll_delete_node_fn_t deleter,
                       void *user_data )
 {
     rebar_ll_node_t *node, *prev, *next;
+    int deleter_called = 0;
 
     prev = NULL;
     node = rebar_ll_get_first( list );
@@ -231,22 +232,25 @@ void rebar_ll_iterate( rebar_ll_list_t *list,
 
             if( NULL != deleter ) {
                 (*deleter)( node, user_data );
+                deleter_called++;
             }
 
             if( REBAR_IR__DELETE_AND_STOP == response ) {
-                return;
+                return deleter_called;
             }
             /* The prev node doesn't move because we got rid of the
              * node that would have been the previous node. */
         } else {
             if( REBAR_IR__STOP == response ) {
-                return;
+                return deleter_called;
             }
             prev = node;
         }
 
         node = next;
     }
+
+    return deleter_called;
 }
 
 void rebar_ll_iterate_from(rebar_ll_node_t *from_node,
