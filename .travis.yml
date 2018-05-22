@@ -5,6 +5,12 @@ language: c
 compiler:
     - gcc
 
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "uX/MVfyjrArMA77caJ5QDTSbDd+PS+7rjXYTRPkGA/rfMh5FziGnteRnMQXp3fGDD4E/bOWTEEupa8mNNcYgHRpvAx4qFxjj0fn0rY4ezaMm8sluNZzRP4upoak0I0C2n8LrmxAa48/EHA1AnqRLrG4mq7a+7OlpFzw4nWEZPKG53N0L6/8fObr56iXlF+eL7fwM3SPVx1Hv+MOrXhl4Z+sLRvXNcwwcGZLQB4zg5IH2CBWNuQWlDy26tX0uG4mLYnZd8XK6SpQRFA50SWT3kuLH7IY1pSUsvrqDm5Li82Cg86PsQe+J8oXpzdNuhYljVmPaPvSKBExs9oPrIxO4ZaANiehNiR+ZD7lttgQ5cz5pViIpOTykXJ8tFc8RTVRGx58mVtVcVWsT8tW/hOhvoh3nYgMYZiVIVvVAU58DSVinz0LNVAAbdbK3yAKEPbaHO5Q0c0djtvJFQNSy75f3L/MtIIqKGhjMYAm7O1+xNDhsLTkoRUSya1Y0k3wnFB4TKIJIUbEka3DMs2blG9FOholKi+vlZUz1XLd1CiZuMgqgW3MqIjaZYSM/mOfGw4vlVm2PGy0YLcac1j5BM/K8htUnHrXoE/yanoPvxE4nLNNTHUaQDlJ4xiMxoiJ90+9nKuW7mkCdPfa+xfQ+Ts+FR/Sxei8VmwMWR4Uv4DVMNj8="
+
 addons:
   coverity_scan:
     project:
@@ -14,14 +20,15 @@ addons:
     build_command_prepend: "mkdir coverity_build && cd coverity_build && cmake .."
     build_command:   "make"
     branch_pattern: master
-    
+
 before_install:
-    - sudo pip install codecov
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo pip install codecov; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx"   ]]; then brew install cunit valgrind; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update -qq; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y -qq libcunit1 libcunit1-dev lcov valgrind; fi
     - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
 
 install:
-    - sudo apt-get update -qq
-    - sudo apt-get install -y -qq check libcunit1 libcunit1-dev uuid-dev valgrind
 
 script:
     - mkdir build
@@ -31,8 +38,4 @@ script:
     - make test
 
 after_success:
-    - codecov
-
-env:
-    global:
-
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then codecov; fi
