@@ -26,9 +26,7 @@ before_install:
     - if [[ "$TRAVIS_OS_NAME" == "osx"   ]]; then brew install cunit valgrind; fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update -qq; fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y -qq libcunit1 libcunit1-dev lcov valgrind; fi
-    - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
-
-install:
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca- ; fi
 
 script:
     - mkdir build
