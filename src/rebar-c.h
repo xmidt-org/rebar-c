@@ -267,8 +267,10 @@ void rebar_ll_remove( rebar_ll_list_t *list, rebar_ll_node_t *node );
  *                  node unaltered by the iteration.  If the value of NULL,
  *                  is passed in each node in the list is deleted.
  *  @param deleter the user provided function called to delete the node
+ *  @return return number of matched nodes that were passed to deleter.
+ *                 if no match 0 or deleter is NULL, zero will be returned.
  */
-void rebar_ll_iterate( rebar_ll_list_t *list,
+int rebar_ll_iterate( rebar_ll_list_t *list,
                       rebar_ll_iterator_fn_t iterator,
                       rebar_ll_delete_node_fn_t deleter,
                       void *user_data );
