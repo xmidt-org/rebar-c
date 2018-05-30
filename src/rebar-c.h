@@ -350,6 +350,8 @@ rebar_ll_node_t *__rebar_ll_find( rebar_ll_list_t *list,
 
 
 #include "cvs-hashmap.h"
+#include "queue.h"
+#include "rebar-xxd.h"
 
 
 #ifdef __cplusplus

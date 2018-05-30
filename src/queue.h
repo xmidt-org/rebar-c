@@ -16,25 +16,27 @@ queue_t *init_queue (void);
 
 /*
  */
-int    delete_queue(queue_t);
+int  delete_queue(queue_t *);
 
 /*
  */
-void * pop  (queue_t);
+void * pop  (queue_t *);
 
 /*
  */
-int    push  (void *, queue_t);
+int    push  (void *, queue_t *);
 
 /*
  */
-void * peek  (queue_t);
+void * peek  (queue_t *);
 
 /*
  */
-size_t size  (queue_t);
+size_t size  (queue_t *);
 
-
+/*
+ */
+bool is_empty(queue_t *);
 
 #ifdef __cplusplus
 }

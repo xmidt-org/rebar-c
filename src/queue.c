@@ -15,8 +15,109 @@
  *
  */
 
-
+#include <stdlib.h>
+#include <string.h>
 #include "queue_internal.h"
 #include "queue.h"
+#include "rebar-xxd.h"
 
 
+/*
+ */
+queue_t *init_queue (void)
+{
+    queue_t *q = (queue_t *) malloc(sizeof(queue_t));
+    memset(q, 0, sizeof(queue_t));
+
+    return q;
+}
+
+/*
+ */
+int delete_queue (queue_t *q)
+{
+    // Delete all nodes; data must be freed by client.
+
+    return 0;
+}
+
+/*
+ */
+void *pop (queue_t *q)
+{
+    void *data = NULL;
+    queue_element_t *e;
+
+    if (q->head == NULL) {
+        return data;
+    }
+
+    data = q->head->data;
+    e = q->head;
+
+    q->head = q->head->next;
+    free(e);
+    q->current_size--;
+    if (0 == q->current_size) {
+        q->tail = NULL;
+    }
+    return data;
+}
+
+/*
+ */
+int push (void *data, queue_t *q)
+{
+    queue_element_t *e = (queue_element_t *) malloc(sizeof(queue_element_t));
+    e->data = data;
+    if (0 == q->current_size) { // Empty queue
+        q->tail = e;
+        q->head = e;
+    } else {
+        q->tail->next = e;
+        q->tail = e;
+    }
+    e->next = NULL;
+
+    return 0;
+}
+
+/*
+ */
+void *peek (queue_t *q)
+{
+    void *data = NULL;
+
+    if (q->head == NULL) {
+        return data;
+    }
+    data = q->head->data;
+
+    return data;
+}
+
+/*
+ */
+size_t size (queue_t *q)
+{
+    return q->current_size;
+}
+
+/*
+ */
+bool is_empty(queue_t *q)
+{
+    return (0 == q->current_size);
+}
+
+void queue_print(queue_t *q, const size_t length)
+{
+    queue_element_t *e = q->head;
+
+    if (q->current_size) {
+        do {
+          rebar_xxd( e->data, length, 80, true );
+          e = e->next;
+        } while (e != q->tail);
+    }
+}
