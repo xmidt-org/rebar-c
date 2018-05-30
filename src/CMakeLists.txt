@@ -17,8 +17,8 @@ cmake_minimum_required(VERSION 2.8.7)
 set(PROJ_REBAR rebar-c)
 
 
-file(GLOB HEADERS rebar-c.h cvs-hashmap.h symbol-table-map.h)
-set(SOURCES linked_list.c cvs-hashmap.c symbol-table-map.c)
+file(GLOB HEADERS rebar-c.h cvs-hashmap.h symbol-table-map.h queue_internal.h queue.h)
+set(SOURCES linked_list.c cvs-hashmap.c symbol-table-map.c queue.c)
 
 
 add_library(${PROJ_REBAR} STATIC ${HEADERS} ${SOURCES})
