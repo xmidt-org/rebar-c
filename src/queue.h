@@ -38,6 +38,11 @@ size_t size  (queue_t *);
  */
 bool is_empty(queue_t *);
 
+/*
+ Queue needs to know the length of data to print it.
+ */
+void queue_print(queue_t *, const size_t length);
+
 #ifdef __cplusplus
 }
 #endif
