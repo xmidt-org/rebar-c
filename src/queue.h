@@ -12,36 +12,36 @@ extern "C" {
 typedef  struct queue_internal_t  queue_t;
 /*
  */
-queue_t *init_queue (void);
+queue_t *rebar_queue_init (void);
 
 /*
  */
-int  delete_queue(queue_t *);
+int  rebar_queue_delete (queue_t *);
 
 /*
  */
-void * pop  (queue_t *);
+void * rebar_queue_pop  (queue_t *);
 
 /*
  */
-int    push  (void *, queue_t *);
+int    rebar_queue_push  (void *, queue_t *);
 
 /*
  */
-void * peek  (queue_t *);
+void * rebar_queue_peek  (queue_t *);
 
 /*
  */
-size_t size  (queue_t *);
+size_t rebar_queue_size  (queue_t *);
 
 /*
  */
-bool is_empty(queue_t *);
+bool rebar_queue_is_empty(queue_t *);
 
 /*
  Queue needs to know the length of data to print it.
  */
-void queue_print(queue_t *, const size_t length);
+void rebar_queue_print(queue_t *, const size_t length);
 
 #ifdef __cplusplus
 }

@@ -24,7 +24,7 @@
 
 /*
  */
-queue_t *init_queue (void)
+queue_t *rebar_queue_init (void)
 {
     queue_t *q = (queue_t *) malloc(sizeof(queue_t));
     memset(q, 0, sizeof(queue_t));
@@ -34,7 +34,7 @@ queue_t *init_queue (void)
 
 /*
  */
-int delete_queue (queue_t *q)
+int rebar_queue_delete (queue_t *q)
 {
     queue_element_t *e;
     
@@ -47,7 +47,7 @@ int delete_queue (queue_t *q)
     if (q->current_size) {
         do {
           queue_element_t *next = e->next;
-          pop(q);
+          rebar_queue_pop(q);
           e = next;
         } while (e != q->tail);
     }
@@ -57,7 +57,7 @@ int delete_queue (queue_t *q)
 
 /*
  */
-void *pop (queue_t *q)
+void *rebar_queue_pop (queue_t *q)
 {
     void *data = NULL;
     queue_element_t *e;
@@ -80,7 +80,7 @@ void *pop (queue_t *q)
 
 /*
  */
-int push (void *data, queue_t *q)
+int rebar_queue_push (void *data, queue_t *q)
 {
     queue_element_t *e = (queue_element_t *) malloc(sizeof(queue_element_t));
     e->data = data;
@@ -99,7 +99,7 @@ int push (void *data, queue_t *q)
 
 /*
  */
-void *peek (queue_t *q)
+void *rebar_queue_peek (queue_t *q)
 {
 
     if (q->head == NULL) {
@@ -111,21 +111,21 @@ void *peek (queue_t *q)
 
 /*
  */
-size_t size (queue_t *q)
+size_t rebar_queue_size (queue_t *q)
 {
     return q->current_size;
 }
 
 /*
  */
-bool is_empty(queue_t *q)
+bool rebar_queue_is_empty(queue_t *q)
 {
     return (0 == q->current_size);
 }
 
 /*
  */
-void queue_print(queue_t *q, const size_t length)
+void rebar_queue_print(queue_t *q, const size_t length)
 {
     queue_element_t *e = q->head;
 
