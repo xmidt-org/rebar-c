@@ -23,7 +23,9 @@ endif ()
 add_test(NAME Simple COMMAND ${MEMORY_CHECK} ./simple)
 link_directories ( ${LIBRARY_DIR} )
 
-add_executable(simple simple.c test_hashmap.c ../src/linked_list.c ../src/cvs-hashmap.c)
+add_executable(simple simple.c test_hashmap.c test_queue.c
+               ../src/linked_list.c ../src/cvs-hashmap.c
+               ../src/queue.c ../src/rebar-xxd.c)
 
 target_link_libraries (simple  gcov
                                cunit

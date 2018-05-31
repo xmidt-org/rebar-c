@@ -36,8 +36,22 @@ queue_t *init_queue (void)
  */
 int delete_queue (queue_t *q)
 {
-    // Delete all nodes; data must be freed by client.
+    queue_element_t *e;
+    
+    if (NULL == q) {
+        return -1;
+    }
+    
+    e = q->head;
 
+    if (q->current_size) {
+        do {
+          queue_element_t *next = e->next;
+          pop(q);
+          e = next;
+        } while (e != q->tail);
+    }
+    free(q);
     return 0;
 }
 
@@ -78,6 +92,7 @@ int push (void *data, queue_t *q)
         q->tail = e;
     }
     e->next = NULL;
+    q->current_size++;
 
     return 0;
 }
@@ -86,14 +101,12 @@ int push (void *data, queue_t *q)
  */
 void *peek (queue_t *q)
 {
-    void *data = NULL;
 
     if (q->head == NULL) {
-        return data;
+        return NULL;
     }
-    data = q->head->data;
 
-    return data;
+    return q->head->data;
 }
 
 /*
@@ -110,6 +123,8 @@ bool is_empty(queue_t *q)
     return (0 == q->current_size);
 }
 
+/*
+ */
 void queue_print(queue_t *q, const size_t length)
 {
     queue_element_t *e = q->head;

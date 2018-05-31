@@ -71,7 +71,7 @@ void rebar_xxd( const void *buffer, const size_t length, size_t line, bool upper
         line += 16;
         *ptr = ' ';
         *text_ptr = '\0';
-        puts( output );
+        printf( "%s", output );
     }
 }
 
