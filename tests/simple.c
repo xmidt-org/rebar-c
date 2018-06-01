@@ -7,6 +7,7 @@
 #include "../src/rebar-c.h"
 #include "general.h"
 #include "test_hashmap.h"
+#include "test_queue.h"
 
 
 struct _foo1 {
@@ -815,6 +816,8 @@ void add_suites( CU_pSuite *suite )
     CU_add_test( *suite, "Test rebar_ll_get_data()     ", test_list_get_data );
     /* Start Tests for HASHMAP */
     add_hashmap_tests(suite);
+    /* Start test of Queue APIs */
+    add_queue_tests(suite);
     
 }
 

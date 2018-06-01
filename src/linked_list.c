@@ -247,6 +247,8 @@ void rebar_ll_iterate( rebar_ll_list_t *list,
 
         node = next;
     }
+
+    return;
 }
 
 void rebar_ll_iterate_from(rebar_ll_node_t *from_node,
