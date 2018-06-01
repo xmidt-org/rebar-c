@@ -17,6 +17,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include "queue_internal.h"
 #include "queue.h"
 #include "rebar-xxd.h"
@@ -38,9 +39,11 @@ queue_t *rebar_queue_init (void)
     return q;
 }
 
+
+#define REBAR_QUEUE_DELETE_ERROR_STR "rebar_queue_delete() deleter not provided, user data leaked!"
 /*
  */
-int rebar_queue_delete (queue_t *q)
+int rebar_queue_delete(queue_t *q, rebar_queue_delete_element_fn_t deleter)
 {
     queue_element_t *e;
     
@@ -48,12 +51,19 @@ int rebar_queue_delete (queue_t *q)
         return -1;
     }
     
+    if (NULL == deleter) {
+        printf("\e[31m%s\e[0m\n", REBAR_QUEUE_DELETE_ERROR_STR);
+    }
+    
     e = q->head;
 
     if (q->current_size) {
         do {
           queue_element_t *next = e->next;
-          rebar_queue_pop(q);
+          void *data = rebar_queue_pop(q);
+          if (NULL != deleter && NULL != data) {
+              deleter(data);
+          }
           e = next;
         } while (e != q->tail);
     }

@@ -14,8 +14,8 @@ void create_queue(void)
     CU_ASSERT (q2 != NULL);
     CU_ASSERT (q2 != q1);
     
-    rebar_queue_delete(q1);
-    rebar_queue_delete(q2);
+    rebar_queue_delete(q1, NULL);
+    rebar_queue_delete(q2, free);
 }
 
 #define NUMBER_OF_ELEMENTS 8
@@ -71,15 +71,30 @@ void do_the_works(void)
         free(queue_data);
     }
 
-    rebar_queue_delete(q);
+    rebar_queue_delete(q, NULL);
 }
 
 
+void delete_queue(void)
+{
+    int element;
+    queue_t *q = rebar_queue_init();
+    
+    for (element = 0; element < NUMBER_OF_ELEMENTS; element++) {
+        char *data = (char *) malloc(sizeof(char) * SIZE_OF_DATA);
+        sprintf(data, "Element %d in queue", element);
+        printf("push(%s, q)\n", data);
+        rebar_queue_push(data, q);
+    }
+    
+    CU_ASSERT(0 == rebar_queue_delete(q, free));
+}
 
 void add_queue_tests(CU_pSuite *suite)
 {
     CU_add_test(*suite, "create_queue", create_queue);
     CU_add_test(*suite, "do_the_works", do_the_works);
+    CU_add_test(*suite, "delete_queue", delete_queue);
 }
 
 
