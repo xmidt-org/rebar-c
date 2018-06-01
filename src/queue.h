@@ -5,6 +5,11 @@
 #define __QUEUE_H__
 
 
+/*
+ queue.h implements a singly linked list FIFO
+ */
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif

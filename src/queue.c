@@ -18,12 +18,24 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "queue_internal.h"
 #include "queue.h"
 #include "rebar-xxd.h"
-/*
- queue.h implements a singly linked list FIFO
- */
+
+
+/* Internal queue data structures */
+typedef struct queue_element_type {
+void *data;
+struct queue_element_type *next;
+} queue_element_t;
+
+typedef struct queue_internal_t {
+queue_element_t *head;
+queue_element_t *tail;
+size_t current_size;
+bool syncronized; // optional ??
+// etc ...
+} queue_internal_struct_type;
+
 
 /*
  * Allocates memory for the queue, queue must be deleted by
